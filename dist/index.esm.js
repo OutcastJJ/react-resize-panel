@@ -4434,8 +4434,7 @@ function (_React$Component) {
     value: function componentDidMount() {
       var content = this.contentRef.current;
       var actualContent = content.children[0];
-      var initialSize = this.props.sizeList && this.props.sizeOption ? this.props.sizeList[this.props.sizeOption] : this.isHorizontal() ? cash(actualContent).outerWidth(true) : cash(actualContent).outerHeight(true);
-      console.log(this.props.direction + " " + initialSize); // Initialize the size value based on the content's current size
+      var initialSize = this.props.sizeList && this.props.sizeOption ? this.props.sizeList[this.props.sizeOption] : this.isHorizontal() ? cash(actualContent).outerWidth(true) : cash(actualContent).outerHeight(true); // Initialize the size value based on the content's current size
 
       this.setState({
         size: initialSize,
@@ -4458,7 +4457,7 @@ function (_React$Component) {
       var margins = isHorizontal ? cash(actualContent).outerWidth(true) - cash(actualContent).outerWidth() : cash(actualContent).outerHeight(true) - cash(actualContent).outerHeight();
       minSize += margins;
 
-      if (this.state.size !== minSize && !this.state.sizeOption) {
+      if (this.state.size < minSize && !this.state.sizeOption) {
         console.log("Overflow, previous size: " + this.state.previousSize);
         this.setState(_objectSpread2({}, this.state, {
           size: this.state.previousSize
@@ -4467,9 +4466,9 @@ function (_React$Component) {
         // If our resizing has left the parent container's content overflowing
         // then we need to shrink back down to fit
         var overflow = isHorizontal ? containerParent.scrollWidth - containerParent.clientWidth : containerParent.scrollHeight - containerParent.clientHeight;
-        console.log("overflow section");
 
         if (overflow) {
+          console.log("Others' overflow", overflow);
           this.setState(_objectSpread2({}, this.state, {
             size: isHorizontal ? actualContent.clientWidth - overflow : actualContent.clientHeight - overflow
           }));

@@ -33906,8 +33906,7 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
     value: function componentDidMount() {
       var content = this.contentRef.current;
       var actualContent = content.children[0];
-      var initialSize = this.props.sizeList && this.props.sizeOption ? this.props.sizeList[this.props.sizeOption] : this.isHorizontal() ? (0, _cashDom.default)(actualContent).outerWidth(true) : (0, _cashDom.default)(actualContent).outerHeight(true);
-      console.log(this.props.direction + " " + initialSize); // Initialize the size value based on the content's current size
+      var initialSize = this.props.sizeList && this.props.sizeOption ? this.props.sizeList[this.props.sizeOption] : this.isHorizontal() ? (0, _cashDom.default)(actualContent).outerWidth(true) : (0, _cashDom.default)(actualContent).outerHeight(true); // Initialize the size value based on the content's current size
 
       this.setState({
         size: initialSize,
@@ -33930,7 +33929,7 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
       var margins = isHorizontal ? (0, _cashDom.default)(actualContent).outerWidth(true) - (0, _cashDom.default)(actualContent).outerWidth() : (0, _cashDom.default)(actualContent).outerHeight(true) - (0, _cashDom.default)(actualContent).outerHeight();
       minSize += margins;
 
-      if (this.state.size !== minSize && !this.state.sizeOption) {
+      if (this.state.size < minSize && !this.state.sizeOption) {
         console.log("Overflow, previous size: " + this.state.previousSize);
         this.setState(_objectSpread({}, this.state, {
           size: this.state.previousSize
@@ -33939,9 +33938,9 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
         // If our resizing has left the parent container's content overflowing
         // then we need to shrink back down to fit
         var overflow = isHorizontal ? containerParent.scrollWidth - containerParent.clientWidth : containerParent.scrollHeight - containerParent.clientHeight;
-        console.log("overflow section");
 
         if (overflow) {
+          console.log("Others' overflow", overflow);
           this.setState(_objectSpread({}, this.state, {
             size: isHorizontal ? actualContent.clientWidth - overflow : actualContent.clientHeight - overflow
           }));
@@ -34054,7 +34053,137 @@ module.exports = {
   "customHandle": "_customHandle_fa2c9",
   "customResizeBorder": "_customResizeBorder_fa2c9"
 };
-},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"src/App.js":[function(require,module,exports) {
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"src/MenuButton.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var MenuButton = function MenuButton(props) {
+  function onClickWrapper() {
+    if (props.onClick) {
+      props.onClick();
+    }
+  }
+
+  var className = "menuButton" + (props.isSelected ? " selected" : "");
+  var hierarchy = props.hierarchy ? props.hierarchy : 0;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: className,
+    onClick: onClickWrapper,
+    style: props.style
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    style: {
+      paddingLeft: hierarchy * 10
+    }
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "buttonContainer"
+  }, /*#__PURE__*/_react.default.createElement("img", {
+    src: "../../asset/image1.jpg",
+    alt: " "
+  }), /*#__PURE__*/_react.default.createElement("p", null, props.title)));
+};
+
+var _default = MenuButton;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"src/MenuButtonList.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _MenuButton = _interopRequireDefault(require("./MenuButton"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var MenuButtonList = function MenuButtonList(props) {
+  var _useState = (0, _react.useState)(0),
+      _useState2 = _slicedToArray(_useState, 2),
+      selectedId = _useState2[0],
+      setSelectedId = _useState2[1];
+
+  function selectWrapper(id, value) {
+    setSelectedId(id);
+
+    if (props.func !== undefined) {
+      props.func(value);
+    }
+  }
+
+  function getSelectedId() {
+    return selectedId;
+  }
+
+  function headerBtnOnClick(id) {
+    var collapsible = document.getElementById(id);
+    var curClassName = collapsible.getAttribute("class");
+
+    if (!curClassName.includes("collapsed")) {
+      curClassName = curClassName + " collapsed";
+    } else {
+      curClassName = curClassName.replace(" collapsed", "");
+    }
+
+    collapsible.setAttribute("class", curClassName);
+  }
+
+  var items = props.items;
+  var listItems = items.map(function (_ref, index) {
+    var title = _ref.title,
+        value = _ref.value;
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: index
+    }, /*#__PURE__*/_react.default.createElement(_MenuButton.default, {
+      key: index,
+      title: title,
+      onClick: function onClick() {
+        return selectWrapper(index, value);
+      },
+      isSelected: selectedId === index,
+      hierarchy: props.hierarchy
+    }));
+  });
+  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("li", null, /*#__PURE__*/_react.default.createElement(_MenuButton.default, {
+    title: props.listId,
+    onClick: function onClick() {
+      return headerBtnOnClick(props.listId);
+    },
+    hierarchy: props.hierarchy - 1
+  })), /*#__PURE__*/_react.default.createElement("ul", {
+    id: props.listId,
+    className: "menuGroupCollapsible"
+  }, listItems));
+};
+
+var _default = MenuButtonList;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","./MenuButton":"src/MenuButton.js"}],"src/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34070,9 +34199,12 @@ var _App = _interopRequireDefault(require("./App.css"));
 
 var _bind = _interopRequireDefault(require("classnames/bind"));
 
+var _MenuButton = _interopRequireDefault(require("./MenuButton"));
+
+var _MenuButtonList = _interopRequireDefault(require("./MenuButtonList"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//import ResizePanel from "react-resize-panel";
 var cx = _bind.default.bind(_App.default);
 
 var testSizeList = {
@@ -34080,6 +34212,20 @@ var testSizeList = {
   default: 285,
   max: 600
 };
+var perspectiveList = [{
+  title: "Programmer",
+  value: ""
+}, {
+  title: "Designer",
+  value: ""
+}];
+var colorList = [{
+  title: "Default",
+  value: ""
+}, {
+  title: "Red",
+  value: "Red"
+}];
 
 var _default = function _default() {
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -34099,8 +34245,36 @@ var _default = function _default() {
     sizeList: testSizeList,
     sizeOption: "max"
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: cx("sidebar", "withMargin", "panel")
-  }, "left panel", /*#__PURE__*/_react.default.createElement("br", null), " with margin ", /*#__PURE__*/_react.default.createElement("br", null), "default 50% of content area using flex-grow")), /*#__PURE__*/_react.default.createElement("div", {
+    style: {
+      flexGrow: 1
+    }
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "logoArea"
+  }, /*#__PURE__*/_react.default.createElement("img", {
+    src: "../../asset/image1.jpg",
+    alt: " "
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: "menu"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "persistent"
+  }, /*#__PURE__*/_react.default.createElement("button", null, "Toggle")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "collapsible"
+  }, /*#__PURE__*/_react.default.createElement(_MenuButton.default, {
+    title: "TeamWeb",
+    style: {
+      backgroundColor: "#999999"
+    }
+  }), /*#__PURE__*/_react.default.createElement("ul", {
+    className: "sideMenuButtonArea"
+  }, /*#__PURE__*/_react.default.createElement(_MenuButtonList.default, {
+    listId: "Perspectives",
+    items: perspectiveList,
+    hierarchy: 1
+  }), /*#__PURE__*/_react.default.createElement(_MenuButtonList.default, {
+    listId: "Colors",
+    items: colorList,
+    hierarchy: 1
+  })))))), /*#__PURE__*/_react.default.createElement("div", {
     className: cx("content", "panel")
   }, "content"), /*#__PURE__*/_react.default.createElement(_ResizePanel.default, {
     direction: "w",
@@ -34128,7 +34302,7 @@ var _default = function _default() {
 };
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../../src/ResizePanel":"../src/ResizePanel.js","./App.css":"src/App.css","classnames/bind":"../node_modules/classnames/bind.js"}],"src/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../../src/ResizePanel":"../src/ResizePanel.js","./App.css":"src/App.css","classnames/bind":"../node_modules/classnames/bind.js","./MenuButton":"src/MenuButton.js","./MenuButtonList":"src/MenuButtonList.js"}],"src/index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -34168,7 +34342,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65368" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59525" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -28,7 +28,6 @@ class ResizePanel extends React.Component {
         : this.isHorizontal()
         ? $(actualContent).outerWidth(true)
         : $(actualContent).outerHeight(true);
-    console.log(this.props.direction + " " + initialSize);
 
     // Initialize the size value based on the content's current size
     this.setState({
@@ -58,7 +57,7 @@ class ResizePanel extends React.Component {
       : $(actualContent).outerHeight(true) - $(actualContent).outerHeight();
     minSize += margins;
 
-    if (this.state.size !== minSize && !this.state.sizeOption) {
+    if (this.state.size < minSize && !this.state.sizeOption) {
       console.log("Overflow, previous size: " + this.state.previousSize);
       this.setState({
         ...this.state,
@@ -70,9 +69,9 @@ class ResizePanel extends React.Component {
       let overflow = isHorizontal
         ? containerParent.scrollWidth - containerParent.clientWidth
         : containerParent.scrollHeight - containerParent.clientHeight;
-      console.log("overflow section");
 
       if (overflow) {
+        console.log("Others' overflow", overflow);
         this.setState({
           ...this.state,
           size: isHorizontal
