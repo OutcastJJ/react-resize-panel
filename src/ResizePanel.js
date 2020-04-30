@@ -9,7 +9,7 @@ let cx = classNames.bind(style);
 class ResizePanel extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { size: 0 };
+    this.state = { size: 0, previousSize: 0, sizeOption: "" };
 
     this.contentRef = React.createRef();
     this.wrapperRef = React.createRef();
@@ -22,12 +22,19 @@ class ResizePanel extends React.Component {
   componentDidMount() {
     const content = this.contentRef.current;
     const actualContent = content.children[0];
-    let initialSize = this.isHorizontal()
-      ? $(actualContent).outerWidth(true)
-      : $(actualContent).outerHeight(true);
+    let initialSize =
+      this.props.sizeList && this.props.sizeOption
+        ? this.props.sizeList[this.props.sizeOption]
+        : this.isHorizontal()
+        ? $(actualContent).outerWidth(true)
+        : $(actualContent).outerHeight(true);
+    console.log(this.props.direction + " " + initialSize);
 
     // Initialize the size value based on the content's current size
-    this.setState({ size: initialSize });
+    this.setState({
+      size: initialSize,
+      sizeOption: this.props.sizeOption || "",
+    });
     this.validateSize();
   }
 
@@ -38,10 +45,10 @@ class ResizePanel extends React.Component {
     const actualContent = content.children[0];
     let containerParent = wrapper.parentElement;
 
-    //
     // Or if our size doesn't equal the actual content size, then we
     // must have pushed past the min size of the content, so resize back
     //let minSize = isHorizontal ? $(actualContent).outerWidth(true) : $(actualContent).outerHeight(true);
+
     let minSize = isHorizontal
       ? actualContent.scrollWidth
       : actualContent.scrollHeight;
@@ -51,10 +58,11 @@ class ResizePanel extends React.Component {
       : $(actualContent).outerHeight(true) - $(actualContent).outerHeight();
     minSize += margins;
 
-    if (this.state.size !== minSize) {
+    if (this.state.size !== minSize && !this.state.sizeOption) {
+      console.log("Overflow, previous size: " + this.state.previousSize);
       this.setState({
         ...this.state,
-        size: minSize
+        size: this.state.previousSize,
       });
     } else {
       // If our resizing has left the parent container's content overflowing
@@ -62,18 +70,31 @@ class ResizePanel extends React.Component {
       let overflow = isHorizontal
         ? containerParent.scrollWidth - containerParent.clientWidth
         : containerParent.scrollHeight - containerParent.clientHeight;
+      console.log("overflow section");
 
       if (overflow) {
-        console.log("overflow", overflow);
         this.setState({
           ...this.state,
           size: isHorizontal
             ? actualContent.clientWidth - overflow
-            : actualContent.clientHeight - overflow
+            : actualContent.clientHeight - overflow,
+        });
+      } else {
+        // new size is valid
+        this.setState({
+          ...this.state,
+          sizeOption: "",
         });
       }
     }
   }
+
+  handleDragStart = (e, ui) => {
+    this.setState({
+      ...this.state,
+      previousSize: this.state.size,
+    });
+  };
 
   handleDrag = (e, ui) => {
     const { direction } = this.props;
@@ -90,15 +111,16 @@ class ResizePanel extends React.Component {
 
   render() {
     const dragHandlers = {
+      onStart: this.handleDragStart,
       onDrag: this.handleDrag,
-      onStop: this.handleDragEnd
+      onStop: this.handleDragEnd,
     };
     const { direction } = this.props;
     const isHorizontal = this.isHorizontal();
 
     let containerClass = cx({
       ContainerHorizontal: isHorizontal,
-      ContainerVertical: !isHorizontal
+      ContainerVertical: !isHorizontal,
     });
 
     if (this.props.containerClass) {
@@ -109,20 +131,24 @@ class ResizePanel extends React.Component {
     if (this.state.size !== 0) {
       containerStyle.flexGrow = 0;
       containerStyle[isHorizontal ? "width" : "height"] = "auto";
+    } else {
+      containerStyle.flexGrow = 0;
+      // containerStyle.overflow = "hidden";
     }
 
-    let handleClasses =
-      this.props.handleClass ||
-      cx({
-        ResizeHandleHorizontal: isHorizontal,
-        ResizeHandleVertical: !isHorizontal
-      });
+    let handleClasses = this.props.removeHandle
+      ? ""
+      : this.props.handleClass ||
+        cx({
+          ResizeHandleHorizontal: isHorizontal,
+          ResizeHandleVertical: !isHorizontal,
+        });
 
     let resizeBarClasses =
       this.props.borderClass ||
       cx({
         ResizeBarHorizontal: isHorizontal,
-        ResizeBarVertical: !isHorizontal
+        ResizeBarVertical: !isHorizontal,
       });
 
     let contentStyle = isHorizontal
@@ -130,7 +156,7 @@ class ResizePanel extends React.Component {
       : { height: this.state.size + "px" };
     let contentClassName = cx("ResizeContent", {
       ResizeContentHorizontal: isHorizontal,
-      ResizeContentVertical: !isHorizontal
+      ResizeContentVertical: !isHorizontal,
     });
 
     let content = [
@@ -141,7 +167,7 @@ class ResizePanel extends React.Component {
         style={contentStyle}
       >
         {React.Children.only(this.props.children)}
-      </div>
+      </div>,
     ];
 
     let handle = (
