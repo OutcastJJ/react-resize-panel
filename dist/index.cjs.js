@@ -4460,10 +4460,12 @@ function (_React$Component) {
 
       var minSize = isHorizontal ? actualContent.scrollWidth : actualContent.scrollHeight;
       var margins = isHorizontal ? cash(actualContent).outerWidth(true) - cash(actualContent).outerWidth() : cash(actualContent).outerHeight(true) - cash(actualContent).outerHeight();
-      minSize += margins;
+      minSize += margins; // scrollwidth only return the round up value,
+      // so if the actual drag size got decimal places,
+      // the menu can't resize
 
-      if (this.state.size !== minSize && !this.state.sizeOption) {
-        console.log("Overflow, drag size: " + this.state.size + "min size: " + minSize);
+      if (Math.round(this.state.size) !== minSize && !this.state.sizeOption) {
+        console.log("Overflow, drag size: " + this.state.size + " min size: " + minSize);
         this.setState(_objectSpread2({}, this.state, {
           size: this.state.previousSize
         }));

@@ -57,9 +57,12 @@ class ResizePanel extends React.Component {
       : $(actualContent).outerHeight(true) - $(actualContent).outerHeight();
     minSize += margins;
 
-    if (this.state.size !== minSize && !this.state.sizeOption) {
+    // scrollwidth only return the round up value,
+    // so if the actual drag size got decimal places,
+    // the menu can't resize
+    if (Math.round(this.state.size) !== minSize && !this.state.sizeOption) {
       console.log(
-        "Overflow, drag size: " + this.state.size + "min size: " + minSize
+        "Overflow, drag size: " + this.state.size + " min size: " + minSize
       );
       this.setState({
         ...this.state,
