@@ -58,7 +58,9 @@ class ResizePanel extends React.Component {
     minSize += margins;
 
     if (this.state.size !== minSize && !this.state.sizeOption) {
-      console.log("Overflow, min size: " + minSize);
+      console.log(
+        "Overflow, drag size: " + this.state.size + "min size: " + minSize
+      );
       this.setState({
         ...this.state,
         size: this.state.previousSize,
