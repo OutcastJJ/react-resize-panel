@@ -4448,8 +4448,8 @@ function (_React$Component) {
       this.validateSize();
     }
   }, {
-    key: "componentWillUpdate",
-    value: function componentWillUpdate() {
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps() {
       var content = this.contentRef.current;
       var actualContent = content.children[0];
       var initialSize = this.props.sizeList && this.props.sizeOption ? this.props.sizeList[this.props.sizeOption] : this.isHorizontal() ? cash(actualContent).outerWidth(true) : cash(actualContent).outerHeight(true); // Initialize the size value based on the content's current size

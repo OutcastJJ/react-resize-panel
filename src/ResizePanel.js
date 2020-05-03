@@ -37,7 +37,7 @@ class ResizePanel extends React.Component {
     this.validateSize();
   }
 
-  componentWillUpdate() {
+  componentWillReceiveProps() {
     const content = this.contentRef.current;
     const actualContent = content.children[0];
     let initialSize =
