@@ -4401,7 +4401,8 @@ function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "handleDragStart", function (e, ui) {
       _this.setState(_objectSpread2({}, _this.state, {
-        previousSize: _this.state.size
+        previousSize: _this.state.size,
+        sizeOption: ""
       }));
     });
 
@@ -4461,8 +4462,8 @@ function (_React$Component) {
       var margins = isHorizontal ? cash(actualContent).outerWidth(true) - cash(actualContent).outerWidth() : cash(actualContent).outerHeight(true) - cash(actualContent).outerHeight();
       minSize += margins;
 
-      if (this.state.size < minSize && !this.state.sizeOption) {
-        console.log("Overflow, previous size: " + this.state.previousSize);
+      if (this.state.size !== minSize && !this.state.sizeOption) {
+        console.log("Overflow, min size: " + minSize);
         this.setState(_objectSpread2({}, this.state, {
           size: this.state.previousSize
         }));
@@ -4475,11 +4476,6 @@ function (_React$Component) {
           console.log("Others' overflow", overflow);
           this.setState(_objectSpread2({}, this.state, {
             size: isHorizontal ? actualContent.clientWidth - overflow : actualContent.clientHeight - overflow
-          }));
-        } else {
-          // new size is valid
-          this.setState(_objectSpread2({}, this.state, {
-            sizeOption: ""
           }));
         }
       }

@@ -57,8 +57,8 @@ class ResizePanel extends React.Component {
       : $(actualContent).outerHeight(true) - $(actualContent).outerHeight();
     minSize += margins;
 
-    if (this.state.size < minSize && !this.state.sizeOption) {
-      console.log("Overflow, previous size: " + this.state.previousSize);
+    if (this.state.size !== minSize && !this.state.sizeOption) {
+      console.log("Overflow, min size: " + minSize);
       this.setState({
         ...this.state,
         size: this.state.previousSize,
@@ -78,12 +78,6 @@ class ResizePanel extends React.Component {
             ? actualContent.clientWidth - overflow
             : actualContent.clientHeight - overflow,
         });
-      } else {
-        // new size is valid
-        this.setState({
-          ...this.state,
-          sizeOption: "",
-        });
       }
     }
   }
@@ -92,6 +86,7 @@ class ResizePanel extends React.Component {
     this.setState({
       ...this.state,
       previousSize: this.state.size,
+      sizeOption: "",
     });
   };
 

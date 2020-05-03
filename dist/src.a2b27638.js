@@ -33869,7 +33869,8 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "handleDragStart", function (e, ui) {
       _this.setState(_objectSpread({}, _this.state, {
-        previousSize: _this.state.size
+        previousSize: _this.state.size,
+        sizeOption: ""
       }));
     });
 
@@ -33929,8 +33930,8 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
       var margins = isHorizontal ? (0, _cashDom.default)(actualContent).outerWidth(true) - (0, _cashDom.default)(actualContent).outerWidth() : (0, _cashDom.default)(actualContent).outerHeight(true) - (0, _cashDom.default)(actualContent).outerHeight();
       minSize += margins;
 
-      if (this.state.size < minSize && !this.state.sizeOption) {
-        console.log("Overflow, previous size: " + this.state.previousSize);
+      if (this.state.size !== minSize && !this.state.sizeOption) {
+        console.log("Overflow, min size: " + minSize);
         this.setState(_objectSpread({}, this.state, {
           size: this.state.previousSize
         }));
@@ -33943,11 +33944,6 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
           console.log("Others' overflow", overflow);
           this.setState(_objectSpread({}, this.state, {
             size: isHorizontal ? actualContent.clientWidth - overflow : actualContent.clientHeight - overflow
-          }));
-        } else {
-          // new size is valid
-          this.setState(_objectSpread({}, this.state, {
-            sizeOption: ""
           }));
         }
       }
@@ -34205,6 +34201,7 @@ var _MenuButtonList = _interopRequireDefault(require("./MenuButtonList"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//import ResizePanel from "react-resize-panel";
 var cx = _bind.default.bind(_App.default);
 
 var testSizeList = {
@@ -34238,12 +34235,10 @@ var _default = function _default() {
     className: cx("body")
   }, /*#__PURE__*/_react.default.createElement(_ResizePanel.default, {
     direction: "e",
-    style: {
-      flexGrow: "1"
-    },
     removeHandle: true,
+    containerClass: "sideMenu",
     sizeList: testSizeList,
-    sizeOption: "max"
+    sizeOption: "default"
   }, /*#__PURE__*/_react.default.createElement("div", {
     style: {
       flexGrow: 1
@@ -34342,7 +34337,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59525" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51475" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
