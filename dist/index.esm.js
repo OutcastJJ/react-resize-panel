@@ -4444,6 +4444,19 @@ function (_React$Component) {
       this.validateSize();
     }
   }, {
+    key: "componentWillUpdate",
+    value: function componentWillUpdate() {
+      var content = this.contentRef.current;
+      var actualContent = content.children[0];
+      var initialSize = this.props.sizeList && this.props.sizeOption ? this.props.sizeList[this.props.sizeOption] : this.isHorizontal() ? cash(actualContent).outerWidth(true) : cash(actualContent).outerHeight(true); // Initialize the size value based on the content's current size
+
+      this.setState({
+        size: initialSize,
+        sizeOption: this.props.sizeOption || ""
+      });
+      this.validateSize();
+    }
+  }, {
     key: "validateSize",
     value: function validateSize() {
       var isHorizontal = this.isHorizontal();

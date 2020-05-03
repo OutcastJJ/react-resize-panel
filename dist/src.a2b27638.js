@@ -33916,6 +33916,19 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
       this.validateSize();
     }
   }, {
+    key: "componentWillUpdate",
+    value: function componentWillUpdate() {
+      var content = this.contentRef.current;
+      var actualContent = content.children[0];
+      var initialSize = this.props.sizeList && this.props.sizeOption ? this.props.sizeList[this.props.sizeOption] : this.isHorizontal() ? (0, _cashDom.default)(actualContent).outerWidth(true) : (0, _cashDom.default)(actualContent).outerHeight(true); // Initialize the size value based on the content's current size
+
+      this.setState({
+        size: initialSize,
+        sizeOption: this.props.sizeOption || ""
+      });
+      this.validateSize();
+    }
+  }, {
     key: "validateSize",
     value: function validateSize() {
       var isHorizontal = this.isHorizontal();
@@ -33928,10 +33941,12 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
 
       var minSize = isHorizontal ? actualContent.scrollWidth : actualContent.scrollHeight;
       var margins = isHorizontal ? (0, _cashDom.default)(actualContent).outerWidth(true) - (0, _cashDom.default)(actualContent).outerWidth() : (0, _cashDom.default)(actualContent).outerHeight(true) - (0, _cashDom.default)(actualContent).outerHeight();
-      minSize += margins;
+      minSize += margins; // scrollwidth only return the round up value,
+      // so if the actual drag size got decimal places,
+      // the menu can't resize
 
-      if (this.state.size !== minSize && !this.state.sizeOption) {
-        console.log("Overflow, min size: " + minSize);
+      if (Math.round(this.state.size) !== minSize && !this.state.sizeOption) {
+        console.log("Overflow, drag size: " + this.state.size + " min size: " + minSize);
         this.setState(_objectSpread({}, this.state, {
           size: this.state.previousSize
         }));
@@ -34187,7 +34202,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _ResizePanel = _interopRequireDefault(require("../../src/ResizePanel"));
 
@@ -34200,6 +34215,10 @@ var _MenuButton = _interopRequireDefault(require("./MenuButton"));
 var _MenuButtonList = _interopRequireDefault(require("./MenuButtonList"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 //import ResizePanel from "react-resize-panel";
 var cx = _bind.default.bind(_App.default);
@@ -34337,7 +34356,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51475" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61438" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
