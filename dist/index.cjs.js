@@ -4401,8 +4401,7 @@ function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "handleDragStart", function (e, ui) {
       _this.setState(_objectSpread2({}, _this.state, {
-        previousSize: _this.state.size,
-        sizeOption: ""
+        previousSize: _this.state.size
       }));
     });
 
@@ -4420,12 +4419,24 @@ function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "handleDragEnd", function (e, ui) {
-      _this.validateSize();
+      var dragValid = _this.validateSize();
+
+      if (dragValid) {
+        if (_this.validateNewDefault(_this.state.size)) {
+          var newSizeList = _this.state.sizeList;
+          newSizeList["default"] = _this.state.size;
+
+          _this.setState(_objectSpread2({}, _this.state, {
+            sizeList: newSizeList
+          }));
+        }
+      }
     });
 
     _this.state = {
       size: 0,
       previousSize: 0,
+      sizeList: {},
       sizeOption: ""
     };
     _this.contentRef = React.createRef();
@@ -4443,19 +4454,7 @@ function (_React$Component) {
 
       this.setState({
         size: initialSize,
-        sizeOption: this.props.sizeOption || ""
-      });
-      this.validateSize();
-    }
-  }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps() {
-      var content = this.contentRef.current;
-      var actualContent = content.children[0];
-      var initialSize = this.props.sizeList && this.props.sizeOption ? this.props.sizeList[this.props.sizeOption] : this.isHorizontal() ? cash(actualContent).outerWidth(true) : cash(actualContent).outerHeight(true); // Initialize the size value based on the content's current size
-
-      this.setState({
-        size: initialSize,
+        sizeList: this.props.sizeList,
         sizeOption: this.props.sizeOption || ""
       });
       this.validateSize();
@@ -4482,6 +4481,7 @@ function (_React$Component) {
         this.setState(_objectSpread2({}, this.state, {
           size: this.state.previousSize
         }));
+        return false;
       } else {
         // If our resizing has left the parent container's content overflowing
         // then we need to shrink back down to fit
@@ -4492,8 +4492,23 @@ function (_React$Component) {
           this.setState(_objectSpread2({}, this.state, {
             size: isHorizontal ? actualContent.clientWidth - overflow : actualContent.clientHeight - overflow
           }));
+          return false;
         }
       }
+
+      return true;
+    }
+  }, {
+    key: "validateNewDefault",
+    value: function validateNewDefault(newDefault) {
+      // Check if the new default value is same with other sizeOption
+      for (var sizeOption in this.state.sizeList) {
+        if (this.state.sizeList[sizeOption] === newDefault) {
+          return false;
+        }
+      }
+
+      return true;
     }
   }, {
     key: "render",
@@ -4578,6 +4593,21 @@ function (_React$Component) {
           style: containerStyle
         }, content)
       );
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(nextProps, prevState) {
+      if (prevState.sizeOption && nextProps.sizeOption != prevState.sizeOption) {
+        var initialSize = prevState.sizeList && nextProps.sizeOption ? prevState.sizeList[nextProps.sizeOption] : 0; // Initialize the size value based on the content's current size
+
+        return {
+          size: initialSize,
+          sizeList: prevState.sizeList,
+          sizeOption: nextProps.sizeOption || ""
+        };
+      }
+
+      return prevState;
     }
   }]);
 
