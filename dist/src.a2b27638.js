@@ -33869,8 +33869,7 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "handleDragStart", function (e, ui) {
       _this.setState(_objectSpread({}, _this.state, {
-        previousSize: _this.state.size,
-        sizeOption: ""
+        previousSize: _this.state.size
       }));
     });
 
@@ -33888,12 +33887,24 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "handleDragEnd", function (e, ui) {
-      _this.validateSize();
+      var dragValid = _this.validateSize();
+
+      if (dragValid) {
+        if (_this.validateNewDefault(_this.state.size)) {
+          var newSizeList = _this.state.sizeList;
+          newSizeList["default"] = _this.state.size;
+
+          _this.setState(_objectSpread({}, _this.state, {
+            sizeList: newSizeList
+          }));
+        }
+      }
     });
 
     _this.state = {
       size: 0,
       previousSize: 0,
+      sizeList: {},
       sizeOption: ""
     };
     _this.contentRef = _react.default.createRef();
@@ -33911,25 +33922,16 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
 
       this.setState({
         size: initialSize,
-        sizeOption: this.props.sizeOption || ""
-      });
-      this.validateSize();
-    }
-  }, {
-    key: "componentWillUpdate",
-    value: function componentWillUpdate() {
-      var content = this.contentRef.current;
-      var actualContent = content.children[0];
-      var initialSize = this.props.sizeList && this.props.sizeOption ? this.props.sizeList[this.props.sizeOption] : this.isHorizontal() ? (0, _cashDom.default)(actualContent).outerWidth(true) : (0, _cashDom.default)(actualContent).outerHeight(true); // Initialize the size value based on the content's current size
-
-      this.setState({
-        size: initialSize,
+        sizeList: this.props.sizeList,
         sizeOption: this.props.sizeOption || ""
       });
       this.validateSize();
     }
   }, {
     key: "validateSize",
+    // componentDidUpdate() {
+    //   this.validateSize();
+    // }
     value: function validateSize() {
       var isHorizontal = this.isHorizontal();
       var content = this.contentRef.current;
@@ -33950,6 +33952,7 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
         this.setState(_objectSpread({}, this.state, {
           size: this.state.previousSize
         }));
+        return false;
       } else {
         // If our resizing has left the parent container's content overflowing
         // then we need to shrink back down to fit
@@ -33960,8 +33963,23 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
           this.setState(_objectSpread({}, this.state, {
             size: isHorizontal ? actualContent.clientWidth - overflow : actualContent.clientHeight - overflow
           }));
+          return false;
         }
       }
+
+      return true;
+    }
+  }, {
+    key: "validateNewDefault",
+    value: function validateNewDefault(newDefault) {
+      // Check if the new default value is same with other sizeOption
+      for (var sizeOption in this.state.sizeList) {
+        if (this.state.sizeList[sizeOption] === newDefault) {
+          return false;
+        }
+      }
+
+      return true;
     }
   }, {
     key: "render",
@@ -34035,6 +34053,21 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
         className: containerClass,
         style: containerStyle
       }, content);
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(nextProps, prevState) {
+      if (prevState.sizeOption && nextProps.sizeOption != prevState.sizeOption) {
+        var initialSize = nextProps.sizeList && nextProps.sizeOption ? nextProps.sizeList[nextProps.sizeOption] : 0; // Initialize the size value based on the content's current size
+
+        return {
+          size: initialSize,
+          sizeList: nextProps.sizeList,
+          sizeOption: nextProps.sizeOption || ""
+        };
+      }
+
+      return prevState;
     }
   }]);
 
@@ -34220,11 +34253,22 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-//import ResizePanel from "react-resize-panel";
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var cx = _bind.default.bind(_App.default);
 
 var testSizeList = {
-  min: 0,
+  min: 50,
   default: 285,
   max: 600
 };
@@ -34243,7 +34287,20 @@ var colorList = [{
   value: "Red"
 }];
 
-var _default = function _default() {
+function App() {
+  var _useState = (0, _react.useState)("default"),
+      _useState2 = _slicedToArray(_useState, 2),
+      sizeMode = _useState2[0],
+      setSizeMode = _useState2[1];
+
+  function toggleMin() {
+    if (sizeMode === "default") {
+      setSizeMode("min");
+    } else {
+      setSizeMode("default");
+    }
+  }
+
   return /*#__PURE__*/_react.default.createElement("div", {
     className: cx("container")
   }, /*#__PURE__*/_react.default.createElement(_ResizePanel.default, {
@@ -34257,7 +34314,7 @@ var _default = function _default() {
     removeHandle: true,
     containerClass: "sideMenu",
     sizeList: testSizeList,
-    sizeOption: "default"
+    sizeOption: sizeMode
   }, /*#__PURE__*/_react.default.createElement("div", {
     style: {
       flexGrow: 1
@@ -34271,7 +34328,9 @@ var _default = function _default() {
     className: "menu"
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "persistent"
-  }, /*#__PURE__*/_react.default.createElement("button", null, "Toggle")), /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("button", {
+    onClick: toggleMin
+  }, "Toggle")), /*#__PURE__*/_react.default.createElement("div", {
     className: "collapsible"
   }, /*#__PURE__*/_react.default.createElement(_MenuButton.default, {
     title: "TeamWeb",
@@ -34313,8 +34372,9 @@ var _default = function _default() {
   }, /*#__PURE__*/_react.default.createElement("span", null, "footer area, min height: 100px"))), /*#__PURE__*/_react.default.createElement("div", {
     className: cx("footerBottomBar")
   }, "bottom bar"))));
-};
+}
 
+var _default = App;
 exports.default = _default;
 },{"react":"../node_modules/react/index.js","../../src/ResizePanel":"../src/ResizePanel.js","./App.css":"src/App.css","classnames/bind":"../node_modules/classnames/bind.js","./MenuButton":"src/MenuButton.js","./MenuButtonList":"src/MenuButtonList.js"}],"src/index.js":[function(require,module,exports) {
 "use strict";
@@ -34356,7 +34416,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61438" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53580" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

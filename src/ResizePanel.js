@@ -9,7 +9,7 @@ let cx = classNames.bind(style);
 class ResizePanel extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { size: 0, previousSize: 0, sizeOption: "" };
+    this.state = { size: 0, previousSize: 0, sizeList: {}, sizeOption: "" };
 
     this.contentRef = React.createRef();
     this.wrapperRef = React.createRef();
@@ -32,28 +32,33 @@ class ResizePanel extends React.Component {
     // Initialize the size value based on the content's current size
     this.setState({
       size: initialSize,
+      sizeList: this.props.sizeList,
       sizeOption: this.props.sizeOption || "",
     });
     this.validateSize();
   }
 
-  componentWillReceiveProps() {
-    const content = this.contentRef.current;
-    const actualContent = content.children[0];
-    let initialSize =
-      this.props.sizeList && this.props.sizeOption
-        ? this.props.sizeList[this.props.sizeOption]
-        : this.isHorizontal()
-        ? $(actualContent).outerWidth(true)
-        : $(actualContent).outerHeight(true);
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.sizeOption && nextProps.sizeOption != prevState.sizeOption) {
+      let initialSize =
+        nextProps.sizeList && nextProps.sizeOption
+          ? nextProps.sizeList[nextProps.sizeOption]
+          : 0;
 
-    // Initialize the size value based on the content's current size
-    this.setState({
-      size: initialSize,
-      sizeOption: this.props.sizeOption || "",
-    });
-    this.validateSize();
+      // Initialize the size value based on the content's current size
+      return {
+        size: initialSize,
+        sizeList: nextProps.sizeList,
+        sizeOption: nextProps.sizeOption || "",
+      };
+    }
+
+    return prevState;
   }
+
+  // componentDidUpdate() {
+  //   this.validateSize();
+  // }
 
   validateSize() {
     const isHorizontal = this.isHorizontal();
@@ -86,6 +91,8 @@ class ResizePanel extends React.Component {
         ...this.state,
         size: this.state.previousSize,
       });
+
+      return false;
     } else {
       // If our resizing has left the parent container's content overflowing
       // then we need to shrink back down to fit
@@ -101,15 +108,18 @@ class ResizePanel extends React.Component {
             ? actualContent.clientWidth - overflow
             : actualContent.clientHeight - overflow,
         });
+
+        return false;
       }
     }
+
+    return true;
   }
 
   handleDragStart = (e, ui) => {
     this.setState({
       ...this.state,
       previousSize: this.state.size,
-      sizeOption: "",
     });
   };
 
@@ -123,8 +133,29 @@ class ResizePanel extends React.Component {
   };
 
   handleDragEnd = (e, ui) => {
-    this.validateSize();
+    var dragValid = this.validateSize();
+    if (dragValid) {
+      if (this.validateNewDefault(this.state.size)) {
+        let newSizeList = this.state.sizeList;
+        newSizeList["default"] = this.state.size;
+        this.setState({
+          ...this.state,
+          sizeList: newSizeList,
+        });
+      }
+    }
   };
+
+  validateNewDefault(newDefault) {
+    // Check if the new default value is same with other sizeOption
+    for (var sizeOption in this.state.sizeList) {
+      if (this.state.sizeList[sizeOption] === newDefault) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 
   render() {
     const dragHandlers = {
