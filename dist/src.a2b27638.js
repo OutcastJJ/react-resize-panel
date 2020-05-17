@@ -33929,9 +33929,6 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
     }
   }, {
     key: "validateSize",
-    // componentDidUpdate() {
-    //   this.validateSize();
-    // }
     value: function validateSize() {
       var isHorizontal = this.isHorizontal();
       var content = this.contentRef.current;
@@ -34058,11 +34055,11 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
     key: "getDerivedStateFromProps",
     value: function getDerivedStateFromProps(nextProps, prevState) {
       if (prevState.sizeOption && nextProps.sizeOption != prevState.sizeOption) {
-        var initialSize = nextProps.sizeList && nextProps.sizeOption ? nextProps.sizeList[nextProps.sizeOption] : 0; // Initialize the size value based on the content's current size
+        var initialSize = prevState.sizeList && nextProps.sizeOption ? prevState.sizeList[nextProps.sizeOption] : 0; // Initialize the size value based on the content's current size
 
         return {
           size: initialSize,
-          sizeList: nextProps.sizeList,
+          sizeList: prevState.sizeList,
           sizeOption: nextProps.sizeOption || ""
         };
       }
@@ -34416,7 +34413,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53580" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53599" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

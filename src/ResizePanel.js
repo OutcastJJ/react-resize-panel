@@ -41,24 +41,20 @@ class ResizePanel extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.sizeOption && nextProps.sizeOption != prevState.sizeOption) {
       let initialSize =
-        nextProps.sizeList && nextProps.sizeOption
-          ? nextProps.sizeList[nextProps.sizeOption]
+        prevState.sizeList && nextProps.sizeOption
+          ? prevState.sizeList[nextProps.sizeOption]
           : 0;
 
       // Initialize the size value based on the content's current size
       return {
         size: initialSize,
-        sizeList: nextProps.sizeList,
+        sizeList: prevState.sizeList,
         sizeOption: nextProps.sizeOption || "",
       };
     }
 
     return prevState;
   }
-
-  // componentDidUpdate() {
-  //   this.validateSize();
-  // }
 
   validateSize() {
     const isHorizontal = this.isHorizontal();
