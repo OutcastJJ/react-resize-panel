@@ -9,9 +9,8 @@ import MenuButtonList from "./MenuButtonList";
 let cx = classNames.bind(style);
 
 const testSizeList = {
-  min: 50,
-  default: 285,
-  max: 600,
+  min: 64.828,
+  default: 240.938,
 };
 
 const perspectiveList = [

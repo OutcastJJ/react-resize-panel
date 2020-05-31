@@ -33889,14 +33889,16 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
     _defineProperty(_assertThisInitialized(_this), "handleDragEnd", function (e, ui) {
       var dragValid = _this.validateSize();
 
-      if (dragValid) {
-        if (_this.validateNewDefault(_this.state.size)) {
-          var newSizeList = _this.state.sizeList;
-          newSizeList["default"] = _this.state.size;
+      if (_this.state.sizeList["default"]) {
+        if (dragValid) {
+          if (_this.validateNewDefault(_this.state.size)) {
+            var newSizeList = _this.state.sizeList;
+            newSizeList["default"] = _this.state.size;
 
-          _this.setState(_objectSpread({}, _this.state, {
-            sizeList: newSizeList
-          }));
+            _this.setState(_objectSpread({}, _this.state, {
+              sizeList: newSizeList
+            }));
+          }
         }
       }
     });
@@ -33923,7 +33925,7 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
       this.setState({
         size: initialSize,
         sizeList: this.props.sizeList,
-        sizeOption: this.props.sizeOption || ""
+        sizeOption: this.props.sizeOption
       });
       this.validateSize();
     }
@@ -34060,7 +34062,7 @@ var ResizePanel = /*#__PURE__*/function (_React$Component) {
         return {
           size: initialSize,
           sizeList: prevState.sizeList,
-          sizeOption: nextProps.sizeOption || ""
+          sizeOption: nextProps.sizeOption
         };
       }
 
@@ -34265,9 +34267,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var cx = _bind.default.bind(_App.default);
 
 var testSizeList = {
-  min: 50,
-  default: 285,
-  max: 600
+  min: 64.828,
+  default: 240.938
 };
 var perspectiveList = [{
   title: "Programmer",
@@ -34413,7 +34414,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53599" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49653" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -33,7 +33,7 @@ class ResizePanel extends React.Component {
     this.setState({
       size: initialSize,
       sizeList: this.props.sizeList,
-      sizeOption: this.props.sizeOption || "",
+      sizeOption: this.props.sizeOption,
     });
     this.validateSize();
   }
@@ -49,7 +49,7 @@ class ResizePanel extends React.Component {
       return {
         size: initialSize,
         sizeList: prevState.sizeList,
-        sizeOption: nextProps.sizeOption || "",
+        sizeOption: nextProps.sizeOption,
       };
     }
 
@@ -130,14 +130,16 @@ class ResizePanel extends React.Component {
 
   handleDragEnd = (e, ui) => {
     var dragValid = this.validateSize();
-    if (dragValid) {
-      if (this.validateNewDefault(this.state.size)) {
-        let newSizeList = this.state.sizeList;
-        newSizeList["default"] = this.state.size;
-        this.setState({
-          ...this.state,
-          sizeList: newSizeList,
-        });
+    if (this.state.sizeList["default"]) {
+      if (dragValid) {
+        if (this.validateNewDefault(this.state.size)) {
+          let newSizeList = this.state.sizeList;
+          newSizeList["default"] = this.state.size;
+          this.setState({
+            ...this.state,
+            sizeList: newSizeList,
+          });
+        }
       }
     }
   };

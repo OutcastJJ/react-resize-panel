@@ -4421,14 +4421,16 @@ function (_React$Component) {
     _defineProperty(_assertThisInitialized(_this), "handleDragEnd", function (e, ui) {
       var dragValid = _this.validateSize();
 
-      if (dragValid) {
-        if (_this.validateNewDefault(_this.state.size)) {
-          var newSizeList = _this.state.sizeList;
-          newSizeList["default"] = _this.state.size;
+      if (_this.state.sizeList["default"]) {
+        if (dragValid) {
+          if (_this.validateNewDefault(_this.state.size)) {
+            var newSizeList = _this.state.sizeList;
+            newSizeList["default"] = _this.state.size;
 
-          _this.setState(_objectSpread2({}, _this.state, {
-            sizeList: newSizeList
-          }));
+            _this.setState(_objectSpread2({}, _this.state, {
+              sizeList: newSizeList
+            }));
+          }
         }
       }
     });
@@ -4455,7 +4457,7 @@ function (_React$Component) {
       this.setState({
         size: initialSize,
         sizeList: this.props.sizeList,
-        sizeOption: this.props.sizeOption || ""
+        sizeOption: this.props.sizeOption
       });
       this.validateSize();
     }
@@ -4603,7 +4605,7 @@ function (_React$Component) {
         return {
           size: initialSize,
           sizeList: prevState.sizeList,
-          sizeOption: nextProps.sizeOption || ""
+          sizeOption: nextProps.sizeOption
         };
       }
 
